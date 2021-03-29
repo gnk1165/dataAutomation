@@ -82,11 +82,17 @@ def addArtist(artist):
     return artists.index(artist)
 
 
-def addAlbum(album, artist, name):
-    if album in albumNames:
-        return artists.index(artist)
-    artists.append(artist)
-    return artists.index(artist)
+def addAlbum(albumName, artist, songName):
+    albId = 0
+    if albumName in albumNames:
+        albId = albumNames.index(albumName)
+    else:
+        albumNames.append(album)
+        albums.append(album(albumName))
+        albId = len(albumNames) - 1
+    albums[albId].addArtist(artist)
+    albums[albId].addSong(artist)
+
 
 
 def read_csv(fName):
@@ -96,11 +102,11 @@ def read_csv(fName):
 
     for line in lines:
         line.split(",")
-        album = line[2]
+        alb = line[2]
         artist = line[3]
         length = line[5]
         name = line[12]
-        albId = addAlbum(album, artist, name)
+        albId = addAlbum(alb, artist, name)
         artId = addArtist(artist)
         songs.append(song(name, artId, albId, length))
 
