@@ -5,14 +5,13 @@
 import random
 from datetime import datetime, timedelta
 
-
 genreList = {"African", "Boomba", "K-pop", "J-pop", "Trot", "Experimental", "Lo-fi", "Harsh noise wall", "Blues",
-              "Reggae", "Calypso", "Mambo", "Salsa", "Novelty Rock", "Country", "Folk", "Bluegrass", "Zydeco",
-              "Elevator Music", "Ambient", "Crunk", "Disco", "New-age", "Eurobeat", "Drum and Bass", "Dubstep", "Techo",
-              "Electronica", "Chiptune", "House", "Hip hop", "Jazz", "Boogie-woogie", "Samba", "Pop", "Soul", "Surf",
-              "Teen pop", "Funk", "Doo Wop", "Beebop", "R&B", "Grunge", "Math Rock", "Paisley Underground",
-              "Christian Rock", "Rap", "Garage", "Death Metal", "Heavy Metal", "Tuning Drone", "Rock", "Classic Rock",
-              "Punk Rock", "Soft Rock", "Rock and Roll", "Swing"}
+             "Reggae", "Calypso", "Mambo", "Salsa", "Novelty Rock", "Country", "Folk", "Bluegrass", "Zydeco",
+             "Elevator Music", "Ambient", "Crunk", "Disco", "New-age", "Eurobeat", "Drum and Bass", "Dubstep", "Techo",
+             "Electronica", "Chiptune", "House", "Hip hop", "Jazz", "Boogie-woogie", "Samba", "Pop", "Soul", "Surf",
+             "Teen pop", "Funk", "Doo Wop", "Beebop", "R&B", "Grunge", "Math Rock", "Paisley Underground",
+             "Christian Rock", "Rap", "Garage", "Death Metal", "Heavy Metal", "Tuning Drone", "Rock", "Classic Rock",
+             "Punk Rock", "Soft Rock", "Rock and Roll", "Swing"}
 
 albums = []
 albumNames = []
@@ -51,7 +50,7 @@ class song:
         self.releaseDate = album.releaseDate
 
     def string(self):
-         return str(self.name) + "," + str(self.length) + "," + str(self.releaseDate)
+        return str(self.name) + "," + str(self.length) + "," + str(self.releaseDate)
 
 
 class album:
@@ -93,11 +92,13 @@ def addAlbum(albumName, artist):
     return albId
 
 
-
 def read_csv(fName):
-    f = open(fName)
+    # THIS NEEDS TO READ CSV
+    f = open(fName, "r")
     lines = f.readlines()
     f.close()
+
+    # Theoretically this still works, I don't know how csv do
     lines = lines[1:]
     for line in lines:
         line.split(",")
@@ -108,6 +109,7 @@ def read_csv(fName):
         albId = addAlbum(alb, artist)
         artId = addArtist(artist)
         songs.append(song(name, artId, albId, length))
+
     fSong = open("songs.csv", "w")
     for s in range(len(songs)):
         fSong.write((str(s) + "," + songs[s].string()))
@@ -118,15 +120,15 @@ def read_csv(fName):
     fAlbum.close()
     fArtist = open("artist.csv", "w")
     for a in range(len(artists)):
-        fArtist.write((str(a)) + "," +artist[a])
+        fArtist.write((str(a)) + "," + artist[a])
     fArtist.close()
     fGenre = open("genre.csv", "w")
     for g in range(len(genreList)):
-        fGenre.write((str(g)) + "," +genreList[g])
+        fGenre.write((str(g)) + "," + genreList[g])
     fArtist.close()
     fAlbmArt = open("AlbmArt.csv", "w")
     for al in range(len(albums)):
-        aList  = albums[al].artists
+        aList = albums[al].artists
         for ar in range(aList):
             fAlbmArt.write(str(al) + "," + str(ar))
     fAlbmArt.close()
@@ -138,7 +140,7 @@ def read_csv(fName):
     for al in range(len(albums)):
         sList = albums[al].songs
         for s in range(sList):
-            fAlbmSng.write(str(al) + "," + str(s) + ","+ str(sList[s]))
+            fAlbmSng.write(str(al) + "," + str(s) + "," + str(sList[s]))
     fAlbmSng.close()
     fGnrSng = open("GnrSng.csv", "w")
     for s in range(len(songs)):
@@ -150,12 +152,8 @@ def read_csv(fName):
     fGnrSng.close()
 
 
-
-
-
-
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    gen_datetime()
+    read_csv("songAttributes_1999-2019.csv")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
