@@ -74,7 +74,6 @@ class album:
         return str(self.name) + "," + str(self.releaseDate)
 
 
-
 def addArtist(artist):
     if artist in artists:
         return artists.index(artist)
@@ -82,16 +81,16 @@ def addArtist(artist):
     return artists.index(artist)
 
 
-def addAlbum(albumName, artist, songName):
-    albId = 0
+def addAlbum(albumName, artist):
     if albumName in albumNames:
         albId = albumNames.index(albumName)
     else:
         albumNames.append(album)
         albums.append(album(albumName))
         albId = len(albumNames) - 1
-    albums[albId].addArtist(artist)
-    albums[albId].addSong(artist)
+    albums[albId].addArtist(artists.index(artist))
+    albums[albId].addSong(len(songs))
+    return albId
 
 
 
@@ -99,16 +98,60 @@ def read_csv(fName):
     f = open(fName)
     lines = f.readlines()
     f.close()
-
+    lines = lines[1:]
     for line in lines:
         line.split(",")
         alb = line[2]
         artist = line[3]
         length = line[5]
         name = line[12]
-        albId = addAlbum(alb, artist, name)
+        albId = addAlbum(alb, artist)
         artId = addArtist(artist)
         songs.append(song(name, artId, albId, length))
+    fSong = open("songs.csv", "w")
+    for s in range(len(songs)):
+        fSong.write((str(s) + "," + songs[s].string()))
+    fSong.close()
+    fAlbum = open("album.csv", "w")
+    for a in range(len(albums)):
+        fAlbum.write((str(a)) + "," + albums[a].string())
+    fAlbum.close()
+    fArtist = open("artist.csv", "w")
+    for a in range(len(artists)):
+        fArtist.write((str(a)) + "," +artist[a])
+    fArtist.close()
+    fGenre = open("genre.csv", "w")
+    for g in range(len(genreList)):
+        fGenre.write((str(g)) + "," +genreList[g])
+    fArtist.close()
+    fAlbmArt = open("AlbmArt.csv", "w")
+    for al in range(len(albums)):
+        aList  = albums[al].artists
+        for ar in range(aList):
+            fAlbmArt.write(str(al) + "," + str(ar))
+    fAlbmArt.close()
+    fAlbmGnr = open("AlbmGnr.csv", "w")
+    for al in range(len(albums)):
+        fAlbmGnr.write(str(al) + "," + str(albums[al].genre))
+    fAlbmGnr.close()
+    fAlbmSng = open("AlbmSng.csv", "w")
+    for al in range(len(albums)):
+        sList = albums[al].songs
+        for s in range(sList):
+            fAlbmSng.write(str(al) + "," + str(s) + ","+ str(sList[s]))
+    fAlbmSng.close()
+    fGnrSng = open("GnrSng.csv", "w")
+    for s in range(len(songs)):
+        fGnrSng.write(str(songs[s].genre) + "," + str(s))
+    fGnrSng.close()
+    fArtSng = open("ArtSng.csv", "w")
+    for s in range(len(songs)):
+        fArtSng.write(str(songs[s].artist) + "," + str(s))
+    fGnrSng.close()
+
+
+
+
 
 
 # Press the green button in the gutter to run the script.
