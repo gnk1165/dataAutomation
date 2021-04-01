@@ -11,7 +11,7 @@ genreList = ["African", "Boomba", "K-pop", "J-pop", "Trot", "Experimental", "Lo-
              "Punk Rock", "Soft Rock", "Rock and Roll", "Swing"]
 
 all_albums_data, album_csv, album_belongs_to_csv, genre_csv = [], [], [], []
-album_includes, created_by = [], []
+album_includes, created_by, performed_by = [], [], []
 song_belongs_to, artists, songs, albums, albumNames = [], [], [], [], []
 
 
@@ -223,6 +223,29 @@ def gen_songs_and_artist(fName):
         file.close()
 
 
+def gen_performed_by():
+    used_artist = []
+    artist_range = range(1, 111)
+    song_range = range(7, 607, 1)
+
+    for x in artist_range:
+        used_artist.append(int(x))
+
+    for n in song_range:
+        artist_id = random.randint(1, len(used_artist))
+        used_artist.index(artist_id)
+        a_id = [artist_id, n]
+        performed_by.append(a_id)
+
+    file = open('performed_by.csv', "w+")
+    file.close()
+    file = open('performed_by.csv', 'a+', newline='')
+    with file:
+        write = csv.writer(file)
+        write.writerows(performed_by)
+    file.close()
+
+
 def gen_created_by():
     used_artist = []
     artist_range = range(1, 111)
@@ -276,6 +299,7 @@ def gen_csv(fName):
     album_belongs_to()
     gen_album_includes()
     gen_created_by()
+    gen_performed_by()
 
 
 def album_belongs_to():
