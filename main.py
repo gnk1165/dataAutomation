@@ -1,26 +1,21 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import random
+import csv
 from datetime import datetime, timedelta
 
-genreList = {"African", "Boomba", "K-pop", "J-pop", "Trot", "Experimental", "Lo-fi", "Harsh noise wall", "Blues",
+genreList = ["African", "Boomba", "K-pop", "J-pop", "Trot", "Experimental", "Lo-fi", "Harsh noise wall", "Blues",
              "Reggae", "Calypso", "Mambo", "Salsa", "Novelty Rock", "Country", "Folk", "Bluegrass", "Zydeco",
              "Elevator Music", "Ambient", "Crunk", "Disco", "New-age", "Eurobeat", "Drum and Bass", "Dubstep", "Techo",
-             "Electronica", "Chiptune", "House", "Hip hop", "Jazz", "Boogie-woogie", "Samba", "Pop", "Soul", "Surf",
+             "Electronica", "Chiptune", "House", "Hip hop", "Jazz", "Boogie-woogie", "Samba", "Soul", "Surf",
              "Teen pop", "Funk", "Doo Wop", "Beebop", "R&B", "Grunge", "Math Rock", "Paisley Underground",
-             "Christian Rock", "Rap", "Garage", "Death Metal", "Heavy Metal", "Tuning Drone", "Rock", "Classic Rock",
-             "Punk Rock", "Soft Rock", "Rock and Roll", "Swing"}
+             "Christian Rock", "Rap", "Garage", "Death Metal", "Heavy Metal", "Tuning Drone", "Classic Rock",
+             "Punk Rock", "Soft Rock", "Rock and Roll", "Swing"]
 
-albums = []
-albumNames = []
-artists = []
-songs = []
+all_albums_data, album_csv, album_belongs_to_csv, genre_csv = [], [], [], []
+song_belongs_to, artists, songs, albums, albumNames = [], [], [], [], []
 
 
+# generate a datetime in format yyyy-mm-dd
 def gen_datetime(min_year=1990, max_year=2020):
-    # generate a datetime in format yyyy-mm-dd
     start = datetime(min_year, 1, 1, 00, 00, 00)
     years = max_year - min_year + 1
     end = start + timedelta(days=365 * years)
@@ -29,14 +24,14 @@ def gen_datetime(min_year=1990, max_year=2020):
     return date[0]
 
 
-def makeGenre():
-    return random.randint(0, len(genreList))
+def gen_genre():
+    return random.randint(0, 56)
 
 
 def getGenre(album):
     g = album.genre
     if random.random() < 0.10:
-        return makeGenre()
+        return gen_genre()
     return g
 
 
@@ -56,8 +51,8 @@ class song:
 class album:
     def __init__(self, name):
         self.name = name
-        self.genre = makeGenre()
-        self.releaseDate = gen_datetime(name)
+        self.genre = gen_genre()
+        self.releaseDate = gen_datetime()
         self.artists = []
         self.songs = []
 
@@ -92,68 +87,164 @@ def addAlbum(albumName, artist):
     return albId
 
 
-def read_csv(fName):
-    # THIS NEEDS TO READ CSV
-    f = open(fName, "r")
-    lines = f.readlines()
-    f.close()
+# generates album.csv
+def gen_album_csv(alb):
+    album1 = album(alb)
+    all_albums_data.append(album1)
 
-    # Theoretically this still works, I don't know how csv do
-    lines = lines[1:]
-    for line in lines:
-        line.split(",")
-        alb = line[2]
-        artist = line[3]
-        length = line[5]
-        name = line[12]
-        albId = addAlbum(alb, artist)
-        artId = addArtist(artist)
-        songs.append(song(name, artId, albId, length))
+    a1 = [album1.releaseDate, album1.name]
+    for an_list in album_csv:
+        if a1[1] in an_list:
+            break
+    else:
+        album_csv.append(a1)
 
-    fSong = open("songs.csv", "w")
-    for s in range(len(songs)):
-        fSong.write((str(s) + "," + songs[s].string()))
-    fSong.close()
-    fAlbum = open("album.csv", "w")
-    for a in range(len(albums)):
-        fAlbum.write((str(a)) + "," + albums[a].string())
-    fAlbum.close()
-    fArtist = open("artist.csv", "w")
-    for a in range(len(artists)):
-        fArtist.write((str(a)) + "," + artist[a])
-    fArtist.close()
-    fGenre = open("genre.csv", "w")
-    for g in range(len(genreList)):
-        fGenre.write((str(g)) + "," + genreList[g])
-    fArtist.close()
-    fAlbmArt = open("AlbmArt.csv", "w")
-    for al in range(len(albums)):
-        aList = albums[al].artists
-        for ar in range(aList):
-            fAlbmArt.write(str(al) + "," + str(ar))
-    fAlbmArt.close()
-    fAlbmGnr = open("AlbmGnr.csv", "w")
-    for al in range(len(albums)):
-        fAlbmGnr.write(str(al) + "," + str(albums[al].genre))
-    fAlbmGnr.close()
-    fAlbmSng = open("AlbmSng.csv", "w")
-    for al in range(len(albums)):
-        sList = albums[al].songs
-        for s in range(sList):
-            fAlbmSng.write(str(al) + "," + str(s) + "," + str(sList[s]))
-    fAlbmSng.close()
-    fGnrSng = open("GnrSng.csv", "w")
-    for s in range(len(songs)):
-        fGnrSng.write(str(songs[s].genre) + "," + str(s))
-    fGnrSng.close()
-    fArtSng = open("ArtSng.csv", "w")
-    for s in range(len(songs)):
-        fArtSng.write(str(songs[s].artist) + "," + str(s))
-    fGnrSng.close()
+    file = open('album.csv', "w+")
+    file.close()
+    file = open('album.csv', 'a+', newline='')
+    with file:
+        write = csv.writer(file)
+        write.writerows(album_csv)
+    file.close()
 
 
-# Press the green button in the gutter to run the script.
+# generates album_belongs_to.csv
+def gen_album_belongs_to_csv():
+    temp_list = []
+    for element in all_albums_data:
+        album_id = all_albums_data.index(element)
+        genre_id = element.genre
+        a_list = [album_id, genre_id]
+        temp_list.append(a_list)
+
+    for x in temp_list:
+        if x not in album_belongs_to_csv:
+            album_belongs_to_csv.append(x)
+
+    file = open('album_belongs_to.csv', "w+")
+    file.close()
+    file = open('album_belongs_to.csv', 'a+', newline='')
+    with file:
+        write = csv.writer(file)
+        write.writerows(album_belongs_to_csv)
+    file.close()
+
+
+def gen_genre_csv():
+    for x in genreList:
+        id = genreList.index(x)
+        genre_csv.append([x, id + 4])
+
+    file = open('genre.csv', "w+")
+    file.close()
+    file = open('genre.csv', 'a+', newline='')
+    with file:
+        write = csv.writer(file)
+        write.writerows(genre_csv)
+    file.close()
+
+
+def gen_song_belongs_to():
+    x = range(1, 605)
+    for n in x:
+        sbt = [n, random.randint(1, 58)]
+        song_belongs_to.append(sbt)
+
+    file = open('song_belongs_to.csv', "w+")
+    file.close()
+    file = open('song_belongs_to.csv', 'a+', newline='')
+    with file:
+        write = csv.writer(file)
+        write.writerows(song_belongs_to)
+    file.close()
+
+
+def gen_artist(fName):
+    with open(fName, encoding="utf8") as csv_file:
+        an_list = []
+
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        for row in csv_reader:
+            if line_count == 0:
+                line_count += 1
+            elif len(artists) < 100:
+                artist = row[3]
+                if artist not in an_list:
+                    an_list.append(artist)
+                    artists.append([artist])
+
+        print(artists)
+        print(len(artists))
+
+        file = open('artist.csv', "w+")
+        file.close()
+        file = open('artist.csv', 'a+', newline='')
+        with file:
+            write = csv.writer(file)
+            write.writerows(artists)
+        file.close()
+
+
+def gen_songs_and_artist(fName):
+    with open(fName, encoding="utf8") as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        for row in csv_reader:
+            if line_count == 0:
+                line_count +=1
+            elif line_count < 600:
+                alb = row[2]
+                artist = row[3]
+                name = row[12]
+                release_date = gen_datetime()
+
+                minutes = int(float(row[5])) / 60000
+                seconds = int(float(row[5])) / 1000
+
+                delta = timedelta(
+                    minutes=minutes,
+                    seconds=seconds
+                )
+
+                s1 = [release_date, name, delta, 0]
+                songs.append(s1)
+                line_count += 1
+            else:
+                break
+
+        file = open('songs.csv', "w+")
+        file.close()
+        file = open('songs.csv', 'a+', newline='')
+        with file:
+            write = csv.writer(file)
+            write.writerows(songs)
+        file.close()
+
+
+def gen_csv(fName):
+    gen_songs_and_artist(fName)
+    gen_artist(fName)
+    gen_song_belongs_to()
+    album_belongs_to()
+
+
+def album_belongs_to():
+    an_list = []
+    i = 1
+    while i != 258:
+        genre_id = random.randint(1, 57)
+        an_list.append([i, genre_id])
+        i += 1
+
+    file = open('album_belongs_to.csv', "w+")
+    file.close()
+    file = open('album_belongs_to.csv', 'a+', newline='')
+    with file:
+        write = csv.writer(file)
+        write.writerows(an_list)
+    file.close()
+
+
 if __name__ == '__main__':
-    read_csv("songAttributes_1999-2019.csv")
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    gen_csv('songAttributes_1999-2019.csv')
