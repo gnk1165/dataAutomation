@@ -11,6 +11,7 @@ genreList = ["African", "Boomba", "K-pop", "J-pop", "Trot", "Experimental", "Lo-
              "Punk Rock", "Soft Rock", "Rock and Roll", "Swing"]
 
 all_albums_data, album_csv, album_belongs_to_csv, genre_csv = [], [], [], []
+album_includes, created_by = [], []
 song_belongs_to, artists, songs, albums, albumNames = [], [], [], [], []
 
 
@@ -222,11 +223,59 @@ def gen_songs_and_artist(fName):
         file.close()
 
 
+def gen_created_by():
+    used_artist = []
+    artist_range = range(1, 111)
+    album_range = range(3, 258, 1)
+
+    for x in artist_range:
+        used_artist.append(int(x))
+
+    for n in album_range:
+        alb_id = random.randint(1, len(used_artist))
+        used_artist.index(alb_id)
+        a_id = [n, alb_id]
+        created_by.append(a_id)
+
+    file = open('created_by.csv', "w+")
+    file.close()
+    file = open('created_by.csv', 'a+', newline='')
+    with file:
+        write = csv.writer(file)
+        write.writerows(created_by)
+    file.close()
+
+
+def gen_album_includes():
+    used_alb = []
+    alb_range = range(1, 257)
+    song_range = range(7, 606, 1)
+
+    for x in alb_range:
+        used_alb.append(int(x))
+
+    for n in song_range:
+        alb_id = random.randint(1, len(used_alb))
+        used_alb.index(alb_id)
+        a_id = [n, alb_id]
+        album_includes.append(a_id)
+
+    file = open('album_includes.csv', "w+")
+    file.close()
+    file = open('album_includes.csv', 'a+', newline='')
+    with file:
+        write = csv.writer(file)
+        write.writerows(album_includes)
+    file.close()
+
+
 def gen_csv(fName):
     gen_songs_and_artist(fName)
     gen_artist(fName)
     gen_song_belongs_to()
     album_belongs_to()
+    gen_album_includes()
+    gen_created_by()
 
 
 def album_belongs_to():
